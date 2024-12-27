@@ -15,7 +15,6 @@ import colors from 'colors';
 dotenv.config();
 const app = express();
 
-
 app.use(bodyParser.json());
 app.use(express.static('public')); // configure static file to save images locally
 // app.use(cookieParser());
@@ -25,7 +24,6 @@ app.use(cors('*'));
 // Connect to MongoDB
 connectDB();
 
-
 app.use(passport.initialize());
 
 // Routes
@@ -34,6 +32,9 @@ app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/report', reportRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+app.use('/', (req, res) => {
+	res.send('Welcome to the API');
+});
 
 const PORT = process.env.PORT || 5000;
 

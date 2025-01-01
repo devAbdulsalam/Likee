@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
 		googleId: { type: String, unique: true, sparse: true },
 		facebookId: { type: String, unique: true, sparse: true },
 		otp: { type: Number },
+		lastSeen: { type: Date, default: Date.now },
 		isVerified: { type: Boolean, default: false },
 		profileImage: { type: String },
 		images: [{ type: String }], // Array of image URLs

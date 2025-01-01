@@ -17,6 +17,7 @@ router.get('/:id', protect, getUserProfile);
 router.put('/:id', protect, updateUserProfile);
 router.put(
 	'/profile-picture',
+	
 	protect,
 	upload.single('profilePicture'),
 	updateProfilePicture

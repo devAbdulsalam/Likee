@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import http from 'http';
+import { Server } from 'socket.io';
 import passport from './config/passport.js'; // Import the passport configuration
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -10,7 +12,6 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import User from './models/UserModel.js';
-
 import { protect } from './middleware/authMiddleware.js';
 import colors from 'colors';
 

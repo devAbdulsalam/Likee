@@ -39,12 +39,15 @@ const io = new Server(server, {
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/user', userRoutes);
-app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/chats', chatRoutes);
 app.use('/api/v1/report', reportRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
-app.use('/', (req, res) => {
+app.use('/welcome', (req, res) => {
 	res.send('Welcome to the API');
+});
+app.use('*', (req, res) => {
+	res.status(404).send('Error getting page');
 });
 
 const onlineUsers = new Map();

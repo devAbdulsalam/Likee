@@ -13,8 +13,8 @@ import { protect } from '../middleware/authMiddleware.js';
 import upload from '../middleware/uploadMiddleware.js'; // File upload middleware
 
 const router = express.Router();
-router.get('/:id', protect, getUserProfile);
-router.put('/:id', protect, updateUserProfile);
+router.get('/', protect, getUserProfile);
+router.put('/', protect, updateUserProfile);
 router.put(
 	'/profile-picture',
 	

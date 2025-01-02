@@ -60,6 +60,8 @@ export const startChat = async (req, res) => {
  * @route GET /api/chats/:chatId
  * @access Private
  */
+
+
 export const getMessages = async (req, res) => {
 	const { chatId } = req.params;
 
@@ -90,7 +92,7 @@ export const getMessages = async (req, res) => {
  */
 export const sendMessage = async (req, res) => {
 	const { chatId } = req.params;
-	const { content } = req.body;
+	const { message } = req.body;
 
 	try {
 		const chat = await Chat.findById(chatId);
@@ -104,8 +106,12 @@ export const sendMessage = async (req, res) => {
 			return res.status(403).json({ message: 'Access denied' });
 		}
 
-		const message = { sender: req.user.id, content, timestamp: new Date() };
-		chat.messages.push(message);
+		const newMessage = {
+			sender: req.user.id,
+			message,
+			timestamp: new Date(),
+		};
+		chat.messages.push(newMessage);
 		chat.updatedAt = new Date();
 		await chat.save();
 

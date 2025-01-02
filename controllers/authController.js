@@ -5,14 +5,14 @@ import bcrypt from 'bcryptjs';
 
 // Generate Access Token
 const generateAccessToken = (user) => {
-	return jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+	return jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
 		expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
 	});
 };
 
 // Generate Refresh Token
 const generateRefreshToken = (user) => {
-	return jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, {
+	return jwt.sign({ _id: user._id }, process.env.REFRESH_TOKEN_SECRET, {
 		expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
 	});
 };
@@ -42,10 +42,13 @@ export const register = async (req, res) => {
 			otp,
 		});
 
+		// Remove password from the response
+		user.password = undefined;
+
 		await sendMail(email, 'Verify Your Email', `Your OTP is: ${otp}`);
 		res
 			.status(201)
-			.json({ message: 'User registered. Check your email for OTP.' });
+			.json({ user, message: 'User registered. Check your email for OTP.' });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}

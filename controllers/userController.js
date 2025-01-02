@@ -2,14 +2,19 @@ import cloudinary from '../config/cloudinary.js';
 import User from '../models/UserModel.js';
 
 export const getUserProfile = async (req, res) => {
-	const user = await User.findById(req.params.id);
-	if (user) res.json(user);
-	else res.status(404).json({ message: 'User not found' });
+	const user = await User.findById(req.user._id).select('-password');
+	if (user) {
+		res.json(user);
+	} else {
+		res.status(404).json({ message: 'User not found' });
+	}
 };
 
 export const updateUserProfile = async (req, res) => {
-	const user = await User.findById(req.params.id);
-	if (!user) return res.status(404).json({ message: 'User not found' });
+	const user = await User.findById(req.user._id);
+	if (!user) {
+		return res.status(404).json({ message: 'User not found' });
+	}
 
 	Object.assign(user, req.body); // Update fields
 	await user.save();
@@ -60,7 +65,9 @@ export const updateProfilePicture = async (req, res) => {
 
 export const verifyProfile = async (req, res) => {
 	const user = await User.findById(req.params.id);
-	if (!user) return res.status(404).json({ message: 'User not found' });
+	if (!user) {
+		return res.status(404).json({ message: 'User not found' });
+	}
 
 	user.profileVerified = true;
 	await user.save();

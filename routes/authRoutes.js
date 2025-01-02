@@ -9,11 +9,15 @@ import {
 	forgotPassword,
 	resetPassword,
 	updatePassword,
+	newUserOtp,
+	verifyEmailOtp,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.post('/send-reg-otp', newUserOtp);
+router.post('/verify-reg-otp', verifyEmailOtp);
 router.post('/register', register);
 router.post('/login', login);
 router.post('/refresh-token', refreshToken);

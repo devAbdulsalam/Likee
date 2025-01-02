@@ -1,4 +1,5 @@
 import User from '../models/UserModel.js';
+import Otp from '../models/OtpModel.js';
 import { sendMail } from '../config/mailer.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
@@ -20,6 +21,60 @@ const generateRefreshToken = (user) => {
 // Generate 4-digit OTP
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000);
 
+
+/**
+ * Register User Email & Send OTP Email
+ * @route POST /api/auth/register
+ */
+export const newUserOtp = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const userExists = await User.findOne({ email });
+		if (userExists) {
+			return res.status(400).json({ message: 'User already exists' });
+		}
+
+		const otp = generateOTP();
+
+		const user = await Otp.create({
+			email,
+			otp,
+		});
+
+		await sendMail(email, 'Verify Your Email', `Your OTP is: ${otp}`);
+		res
+			.status(201)
+			.json({ user, message: 'User registered. Check your email for OTP.' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+export const verifyEmailOtp = async (req, res) => {
+	const { email, otp } = req.body;
+
+	try {
+		const user = await Otp.findOne({ email, otp });
+		if (!user) {
+			return res.status(400).json({ message: 'Invalid OTP or email' });
+		}
+
+		// check if createdAt is less than 5 minutes
+		const createdAt = new Date(user.createdAt).getTime();
+		const now = new Date().getTime();
+		if (now - createdAt > 300000) { // 5 minutes
+            return res.status(400).json({vaerified : false,  message: 'OTP expired' });
+        }
+		user.password = await bcrypt.hash(newPassword, 10);
+		user.otp = null; // Clear OTP
+		await user.save();
+
+		res.status(200).json({ verified : true,  message: 'Otp verified successfully' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
 /**
  * Register User & Send OTP Email
  * @route POST /api/auth/register
